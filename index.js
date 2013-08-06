@@ -31,11 +31,11 @@ function promptUser () {
       // call minLumber
       // create lumberMaps
       var lumberMaps = [];
-      minLumber([], cuts, lumberMaps);
+      minLumber([], cuts, lumberMaps, null);
       fewestIndex = null;
-      fewestLumber = null
-      for (var i=0; i<minLumber.length;i++) {
-        if (lumberMaps[i].length < fewestLumber || fewestLumber == null) {
+      fewestLumber = null;
+      for (var i=0; i<lumberMaps.length;i++) {
+        if (lumberMaps[i].length < fewestLumber || fewestLumber === null) {
           fewestLumber = lumberMaps[i].length;
           fewestIndex = i;
         }
@@ -47,15 +47,19 @@ function promptUser () {
 
 function storeInput (result) {
   var newCut = {
-    length: parseInt(result.length),
-    quantity: parseInt(result.quantity
+    length: parseInt(result.length, 10),
+    quantity: parseInt(result.quantity, 10)
   };
   cuts.push(newCut);
 }
 
-function minLumber (lumberMap, cutsPending, lumberMaps) {
+function minLumber (lumberMap, cutsPending, lumberMaps, bestMap) {
   if (cutsPending.length === 0) {
+    if (bestMap === null || lumberMap.length < bestMap.length) {
+      bestMap = lumberMap;
+    }
     lumberMaps.push(lumberMap);
+    console.log(bestMap);
     return;
   }
 
@@ -70,8 +74,7 @@ function minLumber (lumberMap, cutsPending, lumberMaps) {
     var sum = lumberMapClone[lumberMapClone.length - 1].reduce(function(acc, el) {
       return acc += el;
     }, 0);
-    console.log(sum);
-    if ((sum + cut.length) < 96) {
+    if ((sum + cut.length) <= 95) {
       // I need to add the cut to the lumberMap's last array element
       lumberMapClone[lumberMapClone.length - 1].push(cut.length);
       // I need to reduce the value of the cut.quantity by 1 for the cut that we are on, and remove it from the list if that value is 0.
@@ -79,14 +82,14 @@ function minLumber (lumberMap, cutsPending, lumberMaps) {
       if (cutsPendingClone[index].quantity <= 0) {
         cutsPendingClone.splice(index, 1);
       }
-      minLumber(lumberMapClone, cutsPendingClone, lumberMaps);
+      minLumber(lumberMapClone, cutsPendingClone, lumberMaps, bestMap);
     } else {
       lumberMapClone.push([cut.length]);
       cutsPendingClone[index].quantity -= 1;
       if (cutsPendingClone[index].quantity <= 0) {
         cutsPendingClone.splice(index, 1);
       }
-      minLumber(lumerMapClone, cutsPendingClone, lumberMaps);
+      minLumber(lumberMapClone, cutsPendingClone, lumberMaps, bestMap);
     }
   });
 }
