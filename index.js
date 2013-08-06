@@ -74,7 +74,7 @@ function minLumber (lumberMap, cutsPending, lumberMaps, bestMap) {
     var sum = lumberMapClone[lumberMapClone.length - 1].reduce(function(acc, el) {
       return acc += el;
     }, 0);
-    if ((sum + cut.length) <= 95) {
+    if ((sum + cut.length) <= 96) {
       // I need to add the cut to the lumberMap's last array element
       lumberMapClone[lumberMapClone.length - 1].push(cut.length);
       // I need to reduce the value of the cut.quantity by 1 for the cut that we are on, and remove it from the list if that value is 0.
